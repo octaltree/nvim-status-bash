@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
 # no double quote
-src=`cat<<EOF
+LIB=`cat<<EOF
 function! _find_nvim(pid) abort
   let xs = glob('/tmp/nvim*/0', v:false, v:true)
   for x in xs
@@ -18,21 +16,17 @@ function! _find_nvim(pid) abort
     endtry
   endfor
 endfunction
-
-function! _main() abort
-  let c = _find_nvim($1)
-  if c == 0 | return | endif
-  let status = rpcrequest(c, 'nvim_eval_statusline', '$2', {})['str']
-  echo status
-endfunction
-
-call _main()
 EOF`
 
 function main(){
-  nvim --headless -u NONE\
-    -c "echo nvim_exec(\"${src}\", v:true)"\
-    -c "q"
+  cat| nvim --headless -u NONE -\
+    -c 'let script = join(getline(1, "$"), "\n")'\
+    -c "let pid = $1"\
+    -c "call nvim_exec(\"${LIB}\", v:false)"\
+    -c 'let c = _find_nvim(pid)'\
+    -c 'if c == 0 | cq | endif'\
+    -c 'echo rpcrequest(c, "nvim_exec", script, v:true)'\
+    -c 'q!'
 }
 
 main $*

@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# no double quote
+LIB=`cat<<EOF
+function! _find_nvim(pid) abort
+  let xs = glob('/tmp/nvim*/0', v:false, v:true)
+  for x in xs
+    try
+      let c = sockconnect('pipe', x, {'rpc': v:true, 'data_buffered': v:false})
+      let p = rpcrequest(c, 'nvim_call_function', 'getpid', [])
+      if p == a:pid
+        return c
+      endif
+      call chanclose(c)
+    catch /connection failed/
+    endtry
+  endfor
+endfunction
+EOF`
+
+function main(){
+  echo $2| nvim --headless -u NONE -\
+    -c 'let query = getline(1)'\
+    -c "let pid = $1"\
+    -c "call nvim_exec(\"${LIB}\", v:false)"\
+    -c 'let c = _find_nvim(pid)'\
+    -c 'if c == 0 | cq | endif'\
+    -c 'echo rpcrequest(c, "nvim_eval_statusline", query, {})["str"]'\
+    -c 'q!'
+}
+
+main $*
