@@ -12,14 +12,14 @@ Fetch active file info and show in tmux window title.
 Copy scripts from bin to your PATH directory.
 
 ### With [dein](https://github.com/Shougo/dein.vim)
-```
+```vim
 call dein#add('octaltree/nvim-status-bash')
 ```
 
 you can get the bin path from `g:nvim_status#bin_dir`
 
 ### With [tpm](https://github.com/tmux-plugins/tpm)
-```
+```tmux
 # List of plugins
 set -g @plugin 'octaltree/nvim-status-bash'
 
@@ -36,4 +36,4 @@ run '~/.tmux/plugins/tpm/tpm'
 Now you can get the bin path from `tmux show -g @nvim_status_bin`.
 
 ## Alternative
-- mhinz/neovim-remote
+- [mhinz/neovim-remote](https://github.com/mhinz/neovim-remote)
