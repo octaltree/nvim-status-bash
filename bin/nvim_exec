@@ -16,6 +16,13 @@ function! _find_nvim(pid) abort
     endtry
   endfor
 endfunction
+
+function! _close(c) abort
+  try
+    call chanclose(a:c)
+  catch /E116/
+  endtry
+endfunction
 EOF`
 
 function args_help(){
@@ -39,7 +46,7 @@ function main(){
     -c 'let c = _find_nvim(pid)'\
     -c 'if c == 0 | cq | endif'\
     -c 'echo rpcrequest(c, "nvim_exec", script, v:true)'\
-    -c 'call chanclose(c)'\
+    -c 'call _close(c)'\
     -c 'q!' 2>&1
 }
 

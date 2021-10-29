@@ -15,6 +15,13 @@ function! _find_nvim(pid) abort
   " vim can't re-throw the error starting with "Vim"
 endfunction
 
+function! _close(c) abort
+  try
+    call chanclose(a:c)
+  catch /E116/
+  endtry
+endfunction
+
 function! _abort(_timer) abort
   cq
 endfunction
