@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+# Returns status code
+function is_foreground_group(){
+    local pid=$1
+    local stat=$(ps aux | awk "\$2 == \"${pid}\" { print \$8 }")
+    echo $stat| grep '+' > /dev/null 2>&1
+}
+
+# Returns stdout
+function ppid(){
+    local pid=$1
+    ps -ef | awk "\$2 == \"${pid}\" { print \$3 }"
+}
+
+function filter_foregroupd_group(){
+  local pids="$1"
+  for pid in `echo "$pids"`; do
+    if is_foreground_group $pid; then
+      echo $pid
+    fi
+  done
+}
+
+function find_not_child(){
+  local pids="$1"
+  for i in `echo "$pids"`; do
+    local found=0
+    local ppid=`ppid $i`
+    for j in `echo "$pids"`; do
+      if [ "$ppid" = "$j" ]; then
+        found=1
+      fi
+    done
+    if [ $found -eq 0 ]; then
+      echo $i
+    fi
+  done
+}
+
+function main(){
+  local tty=`echo "$1"| sed 's/^\/dev\///'` # remove prefix /dev/
+  local candidates=`pgrep -t ${tty}`
+  local fgs=`filter_foregroupd_group "$candidates"`
+  find_not_child "$fgs"
+}
+
+main $*
