@@ -14,3 +14,9 @@ function! _find_nvim(pid) abort
   endfor
   " vim can't re-throw the error starting with "Vim"
 endfunction
+
+function! _abort(_timer) abort
+  cq
+endfunction
+
+call timer_start(1000, '_abort')

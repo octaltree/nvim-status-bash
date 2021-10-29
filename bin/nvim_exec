@@ -32,7 +32,7 @@ function args_help(){
 
 function main(){
   args_help $*
-  cat| nvim --headless -u NONE -\
+  cat| timeout 10 nvim --headless -u NONE -\
     -c 'let script = join(getline(1, "$"), "\n")'\
     -c "let pid = $1"\
     -c "call nvim_exec(\"${LIB}\", v:false)"\
