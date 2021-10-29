@@ -11,16 +11,16 @@ Fetch active file info and show in tmux window title.
 ### By hands
 Copy scripts from bin to your PATH directory.
 
-### With [dein](https://github.com/Shougo/dein.vim)
+### With [Shougo/dein](https://github.com/Shougo/dein.vim)
 ```vim
 call dein#add('octaltree/nvim-status-bash')
 ```
 
 you can get the bin path from `g:nvim_status#bin_dir`
 
-### With [tpm](https://github.com/tmux-plugins/tpm)
+### With [tmux-plugins/tpm](https://github.com/tmux-plugins/tpm)
 ```tmux
-# List of plugins
+# add plugins
 set -g @plugin 'octaltree/nvim-status-bash'
 
 # Other examples:
