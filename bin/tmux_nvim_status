@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+function args_help(){
+  local help=0
+  local e=0
+  if [ $# -lt 2 ]; then help=1; e=1; fi
+  for i in $@; do if [ $i = '-h' ] || [ $i = '--help' ]; then help=1; fi done
+  if [ $help -eq 0 ]; then return; fi
+  echo "Usage: $0 {pane_id} {option_name}"
+  echo 'Outputs evaluted statusline if pane_current_command is nvim'
+  echo '  {option_name} is tmux option that defines statusline'
+  exit $e
+}
+
+function main(){
+  args_help $*
+  local pane_id="$1"
+  local opt="$2"
+  local pane_current_command=`tmux display-message -a -t ${pane_id}| sed '/^pane_current_command/!d'| awk -F '=' '{print $2}'`
+  if [ "$pane_current_command" != "nvim" ]; then return 0; fi
+  local statusline=`tmux show-options -vg "$opt"`
+  local pane_tty=`tmux display-message -a -t ${pane_id}| sed '/^pane_tty/!d'| awk -F '=' '{print $2}'`
+  local tty=`echo "$pane_tty"| $CURRENT_DIR/remove_prefix_dev`
+  local pid=`$CURRENT_DIR/tty_fg_pid "$tty"`
+  $CURRENT_DIR/nvim_eval_statusline "$pid" "$statusline"
+}
+
+main "$@"

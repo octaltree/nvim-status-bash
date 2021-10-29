@@ -24,7 +24,7 @@ function args_help(){
   if [ $# -lt 2 ]; then help=1; e=1; fi
   for i in $@; do if [ $i = '-h' ] || [ $i = '--help' ]; then help=1; fi done
   if [ $help -eq 0 ]; then return; fi
-  echo "Usage: $0 {pid} {format}"
+  echo "Usage: $0 {pid} {statusline}"
   echo 'Outputs evaluted statusline'
   echo 'See also $ nvim -c "h nvim_eval_statusline"'
   exit $e
@@ -39,7 +39,7 @@ function main(){
     -c 'let c = _find_nvim(pid)'\
     -c 'if c == 0 | cq | endif'\
     -c 'echo rpcrequest(c, "nvim_eval_statusline", query, {})["str"]'\
-    -c 'q!'
+    -c 'q!' 2>&1
 }
 
-main $*
+main "$@"

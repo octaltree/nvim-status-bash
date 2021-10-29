@@ -3,10 +3,13 @@
 Portable utilities to get information from nvim.
 
 ## Example
+Fetch active file info and show in tmux window title.
+
+![status.png](./src/status.png)
 
 ## Installation
 ### By hands
-* Copy scripts from bin to your PATH directory.
+Copy scripts from bin to your PATH directory.
 
 ### With [dein](https://github.com/Shougo/dein.vim)
 ```
