@@ -18,7 +18,20 @@ function! _find_nvim(pid) abort
 endfunction
 EOF`
 
+function args_help(){
+  local help=0
+  local e=0
+  if [ $# -lt 2 ]; then help=1; e=1; fi
+  for i in $@; do if [ $i = '-h' ] || [ $i = '--help' ]; then help=1; fi done
+  if [ $help -eq 0 ]; then return; fi
+  echo "Usage: $0 {pid} {format}"
+  echo 'Outputs evaluted statusline'
+  echo 'See also $ nvim -c "h nvim_eval_statusline"'
+  exit $e
+}
+
 function main(){
+  args_help $*
   echo $2| nvim --headless -u NONE -\
     -c 'let query = getline(1)'\
     -c "let pid = $1"\

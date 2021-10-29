@@ -38,8 +38,21 @@ function find_not_child(){
   done
 }
 
+function args_help(){
+  local help=0
+  local e=0
+  if [ $# -lt 1 ]; then help=1; e=1; fi
+  for i in $@; do if [ $i = '-h' ] || [ $i = '--help' ]; then help=1; fi done
+  if [ $help -eq 0 ]; then return; fi
+  echo "Usage: $0 {tty}"
+  echo "Outputs the foreground process pid"
+  echo "  {tty} is, for example, pts/4"
+  exit $e
+}
+
 function main(){
-  local tty=`echo "$1"| sed 's/^\/dev\///'` # remove prefix /dev/
+  args_help $*
+  local tty="$1"
   local candidates=`pgrep -t ${tty}`
   local fgs=`filter_foregroupd_group "$candidates"`
   find_not_child "$fgs"
