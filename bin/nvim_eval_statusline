@@ -39,6 +39,7 @@ function main(){
     -c 'let c = _find_nvim(pid)'\
     -c 'if c == 0 | cq | endif'\
     -c 'echo rpcrequest(c, "nvim_eval_statusline", query, {})["str"]'\
+    -c 'call chanclose(c)'\
     -c 'q!' 2>&1
 }
 

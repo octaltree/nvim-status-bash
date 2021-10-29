@@ -14,6 +14,10 @@ function args_help(){
   exit $e
 }
 
+function remove_prefix_dev(){
+  sed 's/^\/dev\///'
+}
+
 function main(){
   args_help $*
   local pane_id="$1"
@@ -22,7 +26,7 @@ function main(){
   if [ "$pane_current_command" != "nvim" ]; then return 0; fi
   local statusline=`tmux show-options -vg "$opt"`
   local pane_tty=`tmux display-message -a -t ${pane_id}| sed '/^pane_tty/!d'| awk -F '=' '{print $2}'`
-  local tty=`echo "$pane_tty"| $CURRENT_DIR/remove_prefix_dev`
+  local tty=`echo "$pane_tty"| remove_prefix_dev`
   local pid=`$CURRENT_DIR/tty_fg_pid "$tty"`
   $CURRENT_DIR/nvim_eval_statusline "$pid" "$statusline"
 }
