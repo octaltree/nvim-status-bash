@@ -5,8 +5,8 @@ CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 function args_help(){
   local help=0
   local e=0
-  if [ $# -lt 2 ]; then help=1; e=1; fi
   for i in $@; do if [ $i = '-h' ] || [ $i = '--help' ]; then help=1; fi done
+  if [ $help -eq 0 ] && [ $# -lt 2 ]; then help=1; e=1; fi
   if [ $help -eq 0 ]; then return; fi
   echo "Usage: $0 {pane_id} {option_name}"
   echo 'Outputs evaluted statusline if pane_current_command is nvim'
