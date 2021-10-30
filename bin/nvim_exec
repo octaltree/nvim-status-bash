@@ -13,6 +13,7 @@ function! _find_nvim(pid) abort
       endif
       call chanclose(c)
     catch /connection failed/
+    catch /was closed by the client/
     endtry
   endfor
 endfunction
@@ -44,7 +45,7 @@ function main(){
     -c "let pid = $1"\
     -c "call nvim_exec(\"${LIB}\", v:false)"\
     -c 'let c = _find_nvim(pid)'\
-    -c 'if c == 0 | cq | endif'\
+    -c 'if ! exists("c") || c == 0 | cq | endif'\
     -c 'echo rpcrequest(c, "nvim_exec", script, v:true)'\
     -c 'call _close(c)'\
     -c 'q!' 2>&1
