@@ -41,6 +41,7 @@ function args_help(){
 function main(){
   args_help $*
   cat| timeout 10 nvim --headless -u NONE -\
+    -c 'set noswapfile'\
     -c 'let script = join(getline(1, "$"), "\n")'\
     -c "let pid = $1"\
     -c "call nvim_exec(\"${LIB}\", v:false)"\
