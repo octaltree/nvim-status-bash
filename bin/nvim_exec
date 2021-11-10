@@ -2,8 +2,9 @@
 
 # no double quote
 LIB=`cat<<EOF
+
 function! _find_nvim(pid) abort
-  let xs = glob('/tmp/nvim*/0', v:false, v:true)
+  let xs = _shuffle(glob('/tmp/nvim*/0', v:false, v:true))
   for x in xs
     try
       let c = sockconnect('pipe', x, {'rpc': v:true, 'data_buffered': v:false})
@@ -16,6 +17,19 @@ function! _find_nvim(pid) abort
     catch /was closed by the client/
     endtry
   endfor
+endfunction
+
+function! _shuffle(xs) abort
+  lua<<EOS
+  function shuffle(tbl)
+    for i = #tbl, 2, -1 do
+      local j = math.random(i)
+      tbl[i], tbl[j] = tbl[j], tbl[i]
+    end
+    return tbl
+  end
+EOS
+  return luaeval("shuffle(_A)", xs)
 endfunction
 
 function! _close(c) abort
@@ -40,7 +54,7 @@ function args_help(){
 
 function main(){
   args_help $*
-  cat| timeout 10 nvim --headless -u NONE -\
+  cat| timeout 10 nvim --headless --listen 127.0.0.1:6666 -u NONE -\
     -c 'set noswapfile'\
     -c 'let script = join(getline(1, "$"), "\n")'\
     -c "let pid = $1"\

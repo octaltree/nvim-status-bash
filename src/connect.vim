@@ -21,9 +21,3 @@ function! _close(c) abort
   catch /E116/
   endtry
 endfunction
-
-function! _abort(_timer) abort
-  cq
-endfunction
-
-call timer_start(1000, '_abort')
