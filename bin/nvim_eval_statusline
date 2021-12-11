@@ -40,7 +40,8 @@ function args_help(){
 
 function main(){
   args_help $*
-  echo $2| timeout 10 nvim --headless --listen 127.0.0.1:6666 -u NONE -\
+  local shada=`mktemp`
+  echo $2| timeout 10 nvim -i $shada -n --headless --listen 127.0.0.1:6666 -u NONE -\
     -c 'set noswapfile'\
     -c 'let query = getline(1)'\
     -c "let pid = $1"\
@@ -50,6 +51,7 @@ function main(){
     -c 'echo rpcrequest(c, "nvim_eval_statusline", query, {})["str"]'\
     -c 'call _close(c)'\
     -c 'q!' 2>&1
+  rm $shada
 }
 
 main "$@"

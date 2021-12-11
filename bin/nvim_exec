@@ -54,7 +54,8 @@ function args_help(){
 
 function main(){
   args_help $*
-  cat| timeout 10 nvim --headless --listen 127.0.0.1:6666 -u NONE -\
+  local shada=`mktemp`
+  cat| timeout 10 nvim -i $shada -n --headless --listen 127.0.0.1:6666 -u NONE -\
     -c 'set noswapfile'\
     -c 'let script = join(getline(1, "$"), "\n")'\
     -c "let pid = $1"\
@@ -64,6 +65,7 @@ function main(){
     -c 'echo rpcrequest(c, "nvim_exec", script, v:true)'\
     -c 'call _close(c)'\
     -c 'q!' 2>&1
+  rm $shada
 }
 
 main "$@"
